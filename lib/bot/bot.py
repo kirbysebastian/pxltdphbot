@@ -43,8 +43,11 @@ class AdminBot(BotBase):
                       color=0xFF0000,
                       timestamp=datetime.utcnow())
         embed.set_author(name="pxltdbot", icon_url=self.guild.icon_url)
-        embed.set_thumbnail(url="http://health.heraldtribune.com/files/2014/04/clowns.jpg")
-        embed.set_footer(text="Get Ready.")
+        github_raw_path = "https://raw.githubusercontent.com/kirbysebastian/pxltdphbot/master"
+        embed.set_thumbnail(
+            url=github_raw_path+"/img/bot/clown_bot_embed_intro.jpg")
+        embed.set_image(url="https://tenor.com/view/hmm-spongebob-smile-gif-9569302")
+        embed.set_footer(text="Behold!")
 
         return embed
         

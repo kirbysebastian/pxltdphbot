@@ -1,4 +1,7 @@
+from datetime import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from discord import Embed
 from discord.ext.commands import Bot as BotBase
 
 PREFIX = "!" #CommandPrefix
@@ -25,12 +28,26 @@ class AdminBot(BotBase):
         super().run(self.TOKEN, reconnect=True)
         print("AdminBot is running...")
 
+
     def get_channel_ids(self):
         with open(CH_ID_PATH, 'r') as f:
             ids = [data for data in f.read().split('\n')]
             ids.remove('')
             channel_ids = {s.split("=")[0]:int(s.split("=")[1]) for s in ids}
             return channel_ids
+
+
+    def get_embed_intro(self):
+        embed = Embed(title="Makeway! pxltdbot is now online!",
+                      description="The great pxltdbot is now back!",
+                      color=0xFF0000,
+                      timestamp=datetime.utcnow())
+        embed.set_author(name="pxltdbot", icon_url=self.guild.icon_url)
+        embed.set_thumbnail(url="http://health.heraldtribune.com/files/2014/04/clowns.jpg")
+        embed.set_footer(text="Get Ready.")
+
+        return embed
+        
 
     async def on_connect(self):
         print("AdminBot Connected.")
@@ -50,7 +67,8 @@ class AdminBot(BotBase):
 
         DEBUG_BOT = self.CHANNEL_IDS["DEBUG_BOT"]
         channel = self.get_channel(DEBUG_BOT)
-        await channel.send("Watsup?! I'm now online and happy to serve you! :)")
+        embed = self.get_embed_intro()
+        await channel.send(content="Watsup bitches?! I'm now online 3:)", embed=embed)
 
 
     async def on_message(self, message):

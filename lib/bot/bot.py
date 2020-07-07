@@ -46,7 +46,7 @@ class AdminBot(BotBase):
         github_raw_path = "https://raw.githubusercontent.com/kirbysebastian/pxltdphbot/master"
         embed.set_thumbnail(
             url=github_raw_path+"/img/bot/clown_bot_embed_intro.jpg")
-        embed.set_image(url="https://tenor.com/view/hmm-spongebob-smile-gif-9569302")
+        embed.set_image(url=github_raw_path+"/img/bot/despicable_minions.jpg")
         embed.set_footer(text="Behold!")
 
         return embed

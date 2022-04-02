@@ -1,3 +1,6 @@
+import os
+import discord
+
 from datetime import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -5,8 +8,6 @@ from discord import Embed
 from discord.ext.commands import Bot as BotBase
 
 PREFIX = "!" #CommandPrefix
-CH_ID_PATH = "../channels/ids.txt"
-TOKEN_PATH = "./../channels/token"
 
 class AdminBot(BotBase):
     def __init__(self):
@@ -14,32 +15,28 @@ class AdminBot(BotBase):
         self.PREFIX = PREFIX
         self.guild = None
         self.scheduler = AsyncIOScheduler()
-        self.CHANNEL_IDS = self.get_channel_ids()
 
-        super().__init__(command_prefix=PREFIX, owner_ids=[self.CHANNEL_IDS["OWNER"]])
+        self.TOKEN = self.getSecrets('TOKEN')
+        self.DEBUG_BOT_CH_ID = int(self.getSecrets('DEBUG_BOT_CHANNEL_ID'))
+        self.SERVER_ID = int(self.getSecrets('SERVER_ID'))
+        self.OWNER_ID = int(self.getSecrets('OWNER_ID'))
+
+        super().__init__(command_prefix=PREFIX, owner_ids=[self.OWNER_ID])
 
 
     def run(self, version):
         self.VERSION = version
-
-        with open(TOKEN_PATH, "r", encoding="utf-8") as tf:
-            self.TOKEN = tf.read()
-
-        super().run(self.TOKEN, reconnect=True)
         print("AdminBot is running...")
+        super().run(self.TOKEN, reconnect=True)
 
+    
+    def getSecrets(self, key):
+        return os.environ[key]
 
-    def get_channel_ids(self):
-        with open(CH_ID_PATH, 'r') as f:
-            ids = [data for data in f.read().split('\n')]
-            ids.remove('')
-            channel_ids = {s.split("=")[0]:int(s.split("=")[1]) for s in ids}
-            return channel_ids
-
-
+    
     def get_embed_intro(self):
-        embed = Embed(title="Makeway! pxltdbot is now online!",
-                      description="The great pxltdbot is now back!",
+        embed = Embed(title="Makeway! pxlbot is now online!",
+                      description="The great pxlbot is now back!",
                       color=0xFF0000,
                       timestamp=datetime.utcnow())
         embed.set_author(name="pxltdbot", icon_url=self.guild.icon_url)
@@ -63,13 +60,12 @@ class AdminBot(BotBase):
     async def on_ready(self):
         if not self.ready:
             self.ready = True
-            self.guild = self.get_guild(self.CHANNEL_IDS["SERVER"])
+            self.guild = self.get_guild(self.SERVER_ID)
             print("AdminBot is ready.")
         else:
             print("AdminBot reconnected.")
 
-        DEBUG_BOT = self.CHANNEL_IDS["DEBUG_BOT"]
-        channel = self.get_channel(DEBUG_BOT)
+        channel = self.get_channel(self.DEBUG_BOT_CH_ID)
         embed = self.get_embed_intro()
         await channel.send(content="Watsup bitches?! I'm now online 3:)", embed=embed)
 

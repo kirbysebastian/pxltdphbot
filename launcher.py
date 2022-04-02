@@ -1,9 +1,8 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3.8
 
+import os
 from lib.bot import bot
 
-VERSION = "0.0.1"
-
 pxltdbot = bot.AdminBot()
-pxltdbot.run(VERSION)
+pxltdbot.run(os.environ['BOT_VERSION'])
 
